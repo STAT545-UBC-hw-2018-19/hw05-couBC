@@ -1,0 +1,109 @@
+---
+title: "hw04_couBC"
+author: "CouBC"
+date: '2018-10-15'
+output: 
+  github_document:
+  toc: TRUE
+  toc_depth: 2
+---
+
+As always, need to load gapminder and tidyverse
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(forcats))
+```
+
+*Part 1 of the assignment - Factor management*
+
+Elaboration for the gapminder data set:
+First, filter the Gapminder data to remove observations associated with the continent of Oceania. In order to get a comparison of the structure before tinkering around with gapminder, I will look at the structure of gapminder and the factorness of gapminder$continent
+
+```{r}
+str(gapminder)
+str(gapminder$continent)
+levels(gapminder$continent)
+nlevels(gapminder$continent)
+class(gapminder$continent)
+```
+
+
+```{r}
+forcats::fct_count(gapminder$continent)
+```
+The other way to do this is using dplyr:
+
+```{r}
+gapminder %>% 
+  count(continent)
+```
+
+
+```{r}
+no_oceania <- gapminder %>%
+  filter(continent!="Oceania")
+
+str(no_oceania)
+
+#after I filtered out Oceania, there are only 1680 rows compared to 1704 with Oceania not filtered, however the structure function tells me that continent is a factor with 5 levels as before.
+```
+
+
+```{r}
+levels(gapminder$continent)
+#I still have Oceania as a level using the method above
+```
+
+Because I still have Oceania as a level using the filter method, I will now try using the forcats_drop way. 
+
+```{r}
+drop_oceania$continent %>% 
+  fct_drop() %>% 
+  levels()
+
+drop_oceania
+#Oceania is now removed as a factor level. After dropping Oceania, I have 1,680 rows whereas before I had 1704, so that's a sanity check to see that it worked.
+```
+
+Now I will re-order the continents based on aggregate population of each continent from smallest to largest
+
+```{r}
+fct_reorder(gapminder$continent, gapminder$pop, max) %>% 
+  levels() %>% 
+  head()
+```
+
+Backwards re-order:
+
+```{r}
+fct_reorder(gapminder$continent, gapminder$pop, max, .desc = TRUE) %>% 
+  levels() %>% 
+  head() 
+```
+
+```{r}
+fct_reorder(gapminder$continent, gapminder$pop, max, .desc = TRUE) %>% 
+  levels() %>% 
+  head() 
+```
+
+
+Now to create a plot. I want to look at the population of the three most populated continents
+
+```{r}
+gap_compare_2007 <- gapminder %>% 
+  filter(year == "2007", continent == c("Asia", "Africa", "Americas")) 
+
+
+
+
+
+  
+
+```
+
+
+
+
