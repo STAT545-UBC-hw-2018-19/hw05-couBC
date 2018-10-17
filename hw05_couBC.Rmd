@@ -85,34 +85,44 @@ fct_reorder(gapminder$continent, gapminder$pop, max, .desc = TRUE) %>%
   head() 
 ```
 
+To verify that Asia is the most populous continent and Oceania is the least populous, I plotted the population of each continent by year. Africa and Americas are neck in neck for being second most populous.
 
-Now to create a plot to verify that indeed Asia has largest population and Europe has smallest. 
-
-```{r, fig.width=2, fig.height=1}
-my_gap <- gapminder %>% 
-  mutate(continent = fct_infreq(continent, pop)) 
-
-ggplot(my_gap, aes(continent, pop)) +
-    geom_point()
-
-#I don't know why it is not ordering it from most populous continent to least populous
-  
+```{r}
+gapminder %>% 
+  mutate(pop = pop/1000000) %>% 
+  group_by(continent, year) %>% 
+  summarize(pop = sum(pop)) %>% 
+  ggplot(aes(year, pop)) +
+  geom_line(aes(color=continent))
 ```
+
+
  
 #Part 2 File I/O
+
+I first filtered the gapminder data so that I only have the Americas data for year 2007 and named that Amer_gap.
 
 ```{r}
 Amer_gap <- gapminder %>%
   filter(year == 2007, continent == "Americas")
 
-str(Amer_gap)
+str(Amer_gap) 
+head(Amer_gap)
 
 ```
 
 ```{r}
-
+write_csv(Amer_gap, "Amer_gap.csv")
 ```
 
+Then I re-opened the CSV file and see that country and continent has turned into a character vector when it was a factor before. 
+
+```{r}
+read_csv("Amer_gap.csv")
+  
+```
+
+Now to turn continent back into factor with levels:
 
 
 #Part 3 Visualization design
@@ -172,7 +182,11 @@ suppressPackageStartupMessages(library(plotly))
 ggsave("hw05_plot.png", p, scale = 1, width = NA, height = NA, dpi = 600, limitsize = TRUE)
 ```
 
-Now I don't know how to reopen it and embed it into the report....
-Then use ![Alt text](/path/to/img.png) to load and embed it in your report. You can play around with various options, such as:
+```{r}
 
-    Arguments of ggsave(), such as width, height, resolution or text scaling.
+```
+
+##Now I will load and embed it into the report. 
+![](/Users/christineou/Desktop/Hw05_couBC/hw05_plot.png)
+
+
