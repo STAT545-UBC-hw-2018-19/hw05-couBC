@@ -2,10 +2,8 @@
 title: "hw04_couBC"
 author: "CouBC"
 date: '2018-10-15'
-output: 
-  github_document:
-  toc: TRUE
-  toc_depth: 2
+output: html_document
+
 ---
 
 As always, need to load gapminder and tidyverse
@@ -14,6 +12,8 @@ As always, need to load gapminder and tidyverse
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(forcats))
+library(scales)
+library(plotly)
 ```
 
 *Part 1 of the assignment - Factor management*
@@ -132,7 +132,7 @@ labels=dollar_format()
 
 ```{r}
 p <- ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
-  scale_x_log10(labels=dollar_format()) + 
+  scale_x_log10(labels = dollar_format()) + 
   scale_y_continuous(breaks=1:10 * 10, labels = comma_format()) +
   geom_point(aes(color = continent, alpha = .2)) + 
   geom_smooth() +
@@ -157,8 +157,8 @@ suppressPackageStartupMessages(library(plotly))
 
 
 ```{r, fig.width=2, fig.height=1}
-p %>% 
-  ggplotly()
+# p %>% 
+#   ggplotly()
 
 #Using plotly has the benefits of being an interactive graph that can tell you information about each data point that you hover over. You can also compare multiple data points using "compare data over hover". You can also zoom in and out to further inspect the data points
 ```
