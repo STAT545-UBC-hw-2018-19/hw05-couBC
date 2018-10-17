@@ -169,5 +169,12 @@ p %>%
 #Using plotly has the benefits of being an interactive graph that can tell you information about each data point that you hover over. You can also compare multiple data points using "compare data over hover". You can also zoom in and out to further inspect the data points
 ```
 
+
+
 #Part 4 - Using ggsave 
+
+
+```{r}
+ggsave("hw05_plot.png", p, scale = 1, width = NA, height = NA, dpi = 600, limitsize = TRUE)
+```
 
