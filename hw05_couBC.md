@@ -1,5 +1,5 @@
 ---
-title: "hw04_couBC"
+title: "hw05_couBC"
 author: "CouBC"
 date: '2018-10-15'
 output:
@@ -15,51 +15,8 @@ As always, need to load gapminder and tidyverse
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(forcats))
-library(scales)
-```
-
-```
-## 
-## Attaching package: 'scales'
-```
-
-```
-## The following object is masked from 'package:purrr':
-## 
-##     discard
-```
-
-```
-## The following object is masked from 'package:readr':
-## 
-##     col_factor
-```
-
-```r
-library(plotly)
-```
-
-```
-## 
-## Attaching package: 'plotly'
-```
-
-```
-## The following object is masked from 'package:ggplot2':
-## 
-##     last_plot
-```
-
-```
-## The following object is masked from 'package:stats':
-## 
-##     filter
-```
-
-```
-## The following object is masked from 'package:graphics':
-## 
-##     layout
+suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(library(plotly))
 ```
 
 *Part 1 of the assignment - Factor management*
@@ -315,7 +272,7 @@ Then I re-opened the CSV file and see that country and continent has turned into
 
 
 ```r
-read_csv("Amer_gap.csv")
+df <- read_csv("Amer_gap.csv")
 ```
 
 ```
@@ -328,6 +285,10 @@ read_csv("Amer_gap.csv")
 ##   pop = col_integer(),
 ##   gdpPercap = col_double()
 ## )
+```
+
+```r
+df
 ```
 
 ```
@@ -347,7 +308,80 @@ read_csv("Amer_gap.csv")
 ## # ... with 15 more rows
 ```
 
-Now to turn continent back into factor with levels:
+Now creating a new factor(subcont) with 3 levels:
+
+
+```r
+df$subcont <- fct_collapse(.f = df$country, 
+              "North America" = c("Canada", "United States", "Mexico", "Puerto Rico", "Trinidad and Tobago"),
+              "Central America" = c("Cuba", "Dominican Republic", "Haiti", "Costa Rica", "El Salvador", "Guatemala", "Honduras", "Nicaragua", "Panama", "Jamaica"),
+              "South America" = c("Argentina", "Bolivia", "Brazil", "Chile", "Colombia", "Ecuador", "Paraguay", "Peru", "Uruguay", "Venezuela"))
+             
+
+df
+```
+
+```
+## # A tibble: 25 x 7
+##    country         continent  year lifeExp      pop gdpPercap subcont     
+##    <chr>           <chr>     <int>   <dbl>    <int>     <dbl> <fct>       
+##  1 Argentina       Americas   2007    75.3   4.03e7    12779. South Ameri…
+##  2 Bolivia         Americas   2007    65.6   9.12e6     3822. South Ameri…
+##  3 Brazil          Americas   2007    72.4   1.90e8     9066. South Ameri…
+##  4 Canada          Americas   2007    80.7   3.34e7    36319. North Ameri…
+##  5 Chile           Americas   2007    78.6   1.63e7    13172. South Ameri…
+##  6 Colombia        Americas   2007    72.9   4.42e7     7007. South Ameri…
+##  7 Costa Rica      Americas   2007    78.8   4.13e6     9645. Central Ame…
+##  8 Cuba            Americas   2007    78.3   1.14e7     8948. Central Ame…
+##  9 Dominican Repu… Americas   2007    72.2   9.32e6     6025. Central Ame…
+## 10 Ecuador         Americas   2007    75.0   1.38e7     6873. South Ameri…
+## # ... with 15 more rows
+```
+
+```r
+df$subcont
+```
+
+```
+##  [1] South America   South America   South America   North America  
+##  [5] South America   South America   Central America Central America
+##  [9] Central America South America   Central America Central America
+## [13] Central America Central America Central America North America  
+## [17] Central America Central America South America   South America  
+## [21] North America   North America   North America   South America  
+## [25] South America  
+## Levels: South America North America Central America
+```
+
+
+
+```r
+#Another way to do the same thing:
+
+df %>%
+  mutate(subcont = fct_collapse(.f = country, "North America" = c("Canada", "United States", "Mexico", "Puerto Rico", "Trinidad and Tobago"),
+              "Central America" = c("Cuba", "Dominican Republic", "Haiti", "Costa Rica", "El Salvador", "Guatemala", "Honduras", "Nicaragua", "Panama", "Jamaica"),
+              "South America" = c("Argentina", "Bolivia", "Brazil", "Chile", "Colombia", "Ecuador", "Paraguay", "Peru", "Uruguay", "Venezuela")))
+```
+
+```
+## # A tibble: 25 x 7
+##    country         continent  year lifeExp      pop gdpPercap subcont     
+##    <chr>           <chr>     <int>   <dbl>    <int>     <dbl> <fct>       
+##  1 Argentina       Americas   2007    75.3   4.03e7    12779. South Ameri…
+##  2 Bolivia         Americas   2007    65.6   9.12e6     3822. South Ameri…
+##  3 Brazil          Americas   2007    72.4   1.90e8     9066. South Ameri…
+##  4 Canada          Americas   2007    80.7   3.34e7    36319. North Ameri…
+##  5 Chile           Americas   2007    78.6   1.63e7    13172. South Ameri…
+##  6 Colombia        Americas   2007    72.9   4.42e7     7007. South Ameri…
+##  7 Costa Rica      Americas   2007    78.8   4.13e6     9645. Central Ame…
+##  8 Cuba            Americas   2007    78.3   1.14e7     8948. Central Ame…
+##  9 Dominican Repu… Americas   2007    72.2   9.32e6     6025. Central Ame…
+## 10 Ecuador         Americas   2007    75.0   1.38e7     6873. South Ameri…
+## # ... with 15 more rows
+```
+
+
 
 
 #Part 3 Visualization design
@@ -361,11 +395,10 @@ ggplot(gapminder, aes(gdpPercap, lifeExp)) + scale_x_log10() +
   geom_point() 
 ```
 
-![](hw05_couBC_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![](hw05_couBC_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 *After*
 
-labels=dollar_format()
 
 
 ```r
@@ -379,7 +412,7 @@ p <- ggplot(gapminder, aes(gdpPercap, lifeExp)) +
        title = "Life Expectancy and GDP by Continent") +
 theme_classic() +
 theme(axis.text=element_text(size=12),
-        axis.title=element_text(size=14))
+        axis.title=element_text(size=12))
 
 p
 ```
@@ -388,7 +421,7 @@ p
 ## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
 ```
 
-![](hw05_couBC_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](hw05_couBC_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
 
 ```r
 #I think this second graph is a more interesting and informative graph. It hasclear labels. It includes a Loess line with standard error. We can where the countries from different continents land in terms of life expectancy and GPD. However, I don't know how to get rid of the alpha on the legend. 

@@ -1,9 +1,11 @@
 ---
-title: "hw04_couBC"
+title: "hw05_couBC"
 author: "CouBC"
 date: '2018-10-15'
-output: html_document
-
+output:
+  html_document:
+    keep_md: yes
+  pdf_document: default
 ---
 
 As always, need to load gapminder and tidyverse
@@ -12,8 +14,8 @@ As always, need to load gapminder and tidyverse
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(forcats))
-library(scales)
-library(plotly)
+suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(library(plotly))
 ```
 
 *Part 1 of the assignment - Factor management*
@@ -118,16 +120,42 @@ write_csv(Amer_gap, "Amer_gap.csv")
 Then I re-opened the CSV file and see that country and continent has turned into a character vector when it was a factor before. 
 
 ```{r}
-read_csv("Amer_gap.csv")
-  
+df <- read_csv("Amer_gap.csv")
+
+df
 ```
 
-Now to turn continent back into factor with levels:
+Now creating a new factor(subcont) with 3 levels:
+
+```{r}
+df$subcont <- fct_collapse(.f = df$country, 
+              "North America" = c("Canada", "United States", "Mexico", "Puerto Rico", "Trinidad and Tobago"),
+              "Central America" = c("Cuba", "Dominican Republic", "Haiti", "Costa Rica", "El Salvador", "Guatemala", "Honduras", "Nicaragua", "Panama", "Jamaica"),
+              "South America" = c("Argentina", "Bolivia", "Brazil", "Chile", "Colombia", "Ecuador", "Paraguay", "Peru", "Uruguay", "Venezuela"))
+             
+
+df
+df$subcont
+
+```
+
+
+```{r}
+#Another way to do the same thing:
+
+df %>%
+  mutate(subcont = fct_collapse(.f = country, "North America" = c("Canada", "United States", "Mexico", "Puerto Rico", "Trinidad and Tobago"),
+              "Central America" = c("Cuba", "Dominican Republic", "Haiti", "Costa Rica", "El Salvador", "Guatemala", "Honduras", "Nicaragua", "Panama", "Jamaica"),
+              "South America" = c("Argentina", "Bolivia", "Brazil", "Chile", "Colombia", "Ecuador", "Paraguay", "Peru", "Uruguay", "Venezuela")))
+```
+
+
 
 
 #Part 3 Visualization design
 
 *Before*
+
 So starting off with plotting lifeExp and gdpPercap gives me this figure. Overall, from this figure, I can see that life expectancy goes up with gdp but i don't know anything much else about those data points e.g., which continent, population density etc., 
 ```{r}
 
@@ -138,7 +166,6 @@ ggplot(gapminder, aes(gdpPercap, lifeExp)) + scale_x_log10() +
 
 *After*
 
-labels=dollar_format()
 
 ```{r}
 p <- ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
@@ -151,7 +178,7 @@ p <- ggplot(gapminder, aes(gdpPercap, lifeExp)) +
        title = "Life Expectancy and GDP by Continent") +
 theme_classic() +
 theme(axis.text=element_text(size=12),
-        axis.title=element_text(size=14))
+        axis.title=element_text(size=12))
 
 p
 
@@ -168,7 +195,7 @@ suppressPackageStartupMessages(library(plotly))
 
 ```{r, fig.width=2, fig.height=1}
 # p %>% 
-#   ggplotly()
+ # ggplotly()
 
 #Using plotly has the benefits of being an interactive graph that can tell you information about each data point that you hover over. You can also compare multiple data points using "compare data over hover". You can also zoom in and out to further inspect the data points
 ```
