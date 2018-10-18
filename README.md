@@ -7,5 +7,7 @@ hw05-couBC created by GitHub Classroom
 
 ![This is the link to the csv file](mer_gap.csv)
 
-![This is the link to the hw05 plot](hw05_plot.png)
+![](hw05_plot.png)
+
+![](https://media.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif)
 
